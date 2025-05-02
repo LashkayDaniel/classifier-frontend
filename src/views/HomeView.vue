@@ -6,6 +6,11 @@ import SuccessIcon from '@/components/icons/SuccessIcon.vue'
 import BtnClassify from '@/components/buttons/BtnClassify.vue'
 import DisplayAnimation from '@/components/animations/DisplayAnimation.vue'
 import DatasetIcon from '@/components/icons/DatasetIcon.vue'
+import { useDatasetStore } from '@/stores/dataset.ts'
+import { useToastStore } from '@/stores/toast.ts'
+
+const datasetStore = useDatasetStore()
+const toastStore = useToastStore()
 
 const isPageVisible = ref<boolean>(false)
 const file = ref<File | null>(null)
@@ -33,7 +38,12 @@ const handleFileUpload = (event: Event) => {
 
   const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase()
   if (!['csv'].includes(fileExtension || '')) {
-    alert('Only .csv files are supported')
+    toastStore.add({
+      type: 'warning',
+      title: 'Incorrect file format',
+      message: 'Only .csv files are supported',
+      durationShow: 5
+    })
     return
   }
 
@@ -44,7 +54,12 @@ async function uploadDatasetHandler() {
   uploadDatasetLoading.value = true
 
   if (!file.value) {
-    console.log('File is not selected')
+    toastStore.add({
+      type: 'warning',
+      title: 'Warning',
+      message: 'File is not selected',
+      durationShow: 3
+    })
     return
   }
 
@@ -55,14 +70,26 @@ async function uploadDatasetHandler() {
       headers: { 'Content-Type': 'multipart/form-data' }
     })
     console.log('The file was sent successfully:', response.data)
+    toastStore.add({
+      type: 'success',
+      title: 'Success',
+      message: response.data?.message,
+      durationShow: 3
+    })
   } catch (error) {
     console.error('Error sending a file:', error)
-    alert(error?.response.data.error)
+    toastStore.add({
+      type: 'error',
+      title: 'Error',
+      message: error?.response?.data?.error || error,
+      durationShow: 3
+    })
     return
   } finally {
     uploadDatasetLoading.value = false
   }
 
+  datasetStore.set()
   await router.push({ name: 'classify' })
 }
 
