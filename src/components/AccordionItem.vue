@@ -28,27 +28,31 @@ const toggleShow = () => {
     </div>
 
     <Transition
-      name="fade"
-      enter-active-class="transition-all duration-500"
-      leave-active-class="transition-all duration-500"
+      name="expand"
+      enter-active-class="transition-all duration-500 ease-in-out"
+      leave-active-class="transition-all duration-500 ease-in-out"
     >
-      <div v-show="showContent" class="mt-2">
-        <slot />
+      <div v-show="showContent" class="overflow-hidden">
+        <div class="py-4">
+          <slot />
+        </div>
       </div>
     </Transition>
   </div>
 </template>
 
 <style scoped>
-.fade-enter-from,
-.fade-leave-to {
+.expand-enter-from,
+.expand-leave-to {
   opacity: 0;
-  max-height: 0;
+  transform: scaleY(0);
+  transform-origin: top;
 }
 
-.fade-enter-to,
-.fade-leave-from {
+.expand-enter-to,
+.expand-leave-from {
   opacity: 1;
-  max-height: 500px;
+  transform: scaleY(1);
+  transform-origin: top;
 }
 </style>
