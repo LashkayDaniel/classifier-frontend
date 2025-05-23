@@ -37,11 +37,11 @@ const handleFileUpload = (event: Event) => {
   if (!uploadedFile) return
 
   const fileExtension = uploadedFile.name.split('.').pop()?.toLowerCase()
-  if (!['csv'].includes(fileExtension || '')) {
+  if (!['csv', 'xlsx'].includes(fileExtension || '')) {
     toastStore.add({
       type: 'warning',
       title: 'Incorrect file format',
-      message: 'Only .csv files are supported',
+      message: 'Only .csv or .xlsx files are supported',
       durationShow: 5
     })
     return
@@ -108,7 +108,7 @@ onMounted(() => {
   </Transition>
 
   <section class="w-2/5 mx-auto p-2 mt-10">
-    <div class="relative p-2 rounded border-2 border-dashed shadow-lg"
+    <div class="relative p-2 rounded border-2 border-dashed shadow-lg backdrop-blur-md"
          :class="fileUploadClass">
       <label
         class="cursor-pointer"
@@ -118,7 +118,7 @@ onMounted(() => {
       >
         <template v-if="!isFileUploaded">
           <p class="font-mono text-zinc-500 text-center">
-            Upload a sample of data (.csv) (in the format: x,y,z,...,class)
+            Upload a sample of data (.csv,.xlsx) (in the format: x,y,z,...,class)
           </p>
           <div
             class="absolute bottom-1/3 left-1/2 -translate-x-1/2 border border-white shadow-xl bg-black/70 hover:bg-black/80 text-gray-200 tracking-wider px-4 py-1.5 font-bold rounded-full">
@@ -143,7 +143,7 @@ onMounted(() => {
         <input id="file-input"
                type="file"
                class="hidden"
-               accept=".csv"
+               accept=".csv, .xlsx"
                @change="handleFileUpload" />
       </label>
 
