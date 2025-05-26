@@ -5,23 +5,7 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import * as d3 from 'd3'
-
-interface Sphere {
-  center: { x: number; y: number }
-  radius: number
-  class: string
-  color: string
-}
-
-interface Node {
-  class: string
-  u?: { center: [number, number]; radius: number; class: string }[]
-  k?: { center: [number, number]; radius: number; class: string }[]
-}
-
-interface TreeData {
-  nodes: Node[]
-}
+import type { Sphere, TreeData } from '@/types/SphereType.ts'
 
 const chartContainer = ref<HTMLDivElement | null>(null)
 let tooltip: d3.Selection<HTMLDivElement, unknown, HTMLElement, any>
