@@ -14,12 +14,12 @@ const toggleShow = () => {
 </script>
 
 <template>
-  <div class="p-2 bg-stone-400/50 m-2">
+  <div class="p-2 bg-stone-400/50 m-2 backdrop-blur-md">
     <div
-      class="flex justify-between border-stone-400 p-4 hover:bg-stone-400/20 transition-all duration-400 hover:rounded-lg cursor-pointer"
+      class="flex justify-between border-stone-400 p-2 sm:p-4 hover:bg-stone-400/20 transition-all duration-400 hover:rounded-lg cursor-pointer"
       :class="{'border-b':showContent}"
       @click.prevent="toggleShow">
-      <h2 class="font-semibold text-stone-700">{{ title }}</h2>
+      <h2 class="font-semibold text-stone-700 text-sm sm:text-base">{{ title }}</h2>
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
            stroke="currentColor" class="size-6 stroke-stone-500"
            :class="{'rotate-180': showContent}">

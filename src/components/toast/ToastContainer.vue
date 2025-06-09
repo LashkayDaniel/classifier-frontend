@@ -10,7 +10,8 @@ function closeHandler(id: number) {
 </script>
 
 <template>
-  <div class="fixed right-5 bottom-5 z-100 overflow-hidden">
+  <div
+    class="fixed left-2 bottom-2 sm:left-auto sm:right-5 sm:bottom-5 z-100 overflow-hidden">
     <TransitionGroup name="list" tag="ul" class="flex flex-col gap-y-2">
       <ToastItem
         v-for="toast in toastStore.toastQueue"

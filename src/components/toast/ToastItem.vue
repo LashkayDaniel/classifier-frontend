@@ -42,11 +42,13 @@ const colorClasses = computed(() => {
 </script>
 
 <template>
-  <li class="border rounded p-2 w-70" :class="colorClasses.base">
+  <li class="border rounded p-2 w-50 sm:w-70 backdrop-blur-sm" :class="colorClasses.base">
     <div class="flex justify-between items-center">
       <div class="flex items-center space-x-2">
         <ToastIcon :type="toast.type" />
-        <h3 :class="colorClasses.title" class="font-semibold">{{ toast.title }}</h3>
+        <h3 :class="colorClasses.title" class="text-sm sm:text-base font-semibold">
+          {{ toast.title }}
+        </h3>
       </div>
       <button @click="emit('close', toast.id)"
               title="close"
@@ -59,8 +61,8 @@ const colorClasses = computed(() => {
         </svg>
       </button>
     </div>
-    <p :class="colorClasses.text" class="text-sm ml-7 hyphens-auto">
-      {{ toast.message
-      }}</p>
+    <p :class="colorClasses.text" class="text-xs sm:text-sm ml-7 hyphens-auto">
+      {{ toast.message }}
+    </p>
   </li>
 </template>

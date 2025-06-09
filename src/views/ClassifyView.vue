@@ -8,8 +8,10 @@ import router from '@/router'
 import { onBeforeRouteLeave } from 'vue-router'
 import CircleChart from '@/components/charts/CircleChart.vue'
 import SphereChart from '@/components/charts/SphereChart.vue'
+import { useToastStore } from '@/stores/toast.ts'
 
 const datasetStore = useDatasetStore()
+const toastStore = useToastStore()
 
 const BACK_URL = 'http://localhost:8080/api/v1'
 
@@ -72,7 +74,12 @@ function coordsInputHandle(event: Event) {
     .filter((n: number) => !isNaN(n))
 
   if (coords.length > classifyForm.dimension) {
-    console.warn('Coordinates must not be greater than dataset dimension')
+    toastStore.add({
+      type: 'warning',
+      title: 'Warning',
+      message: 'Input object dimension must match the training data dimension',
+      durationShow: 4
+    })
     return
   }
   classifyForm.coords = coords
@@ -102,9 +109,10 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="w-full mt-4 mb-10 grid grid-cols-3 p-4">
+  <div
+    class="w-full mt-2 sm:mt-4 mb-10 grid grid-cols-2 sm:grid-cols-3 gap-x-2 items-center p-2 sm:p-4">
     <button @click="newDatasetBtnHandler"
-            class="bg-black/80 w-fit flex space-x-2 items-center text-white text-zinc-200 shadow-xl font-semibold py-2 px-4 rounded hover:bg-zinc-700">
+            class="bg-black/80 w-fit h-fit flex space-x-2 place-self-end sm:place-self-auto items-center text-white text-sm sm:text-base text-zinc-200 shadow-xl font-semibold py-2 px-3 sm:px-4 rounded hover:bg-zinc-700">
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
            stroke="currentColor" class="size-5">
         <path stroke-linecap="round" stroke-linejoin="round"
@@ -112,43 +120,46 @@ onMounted(() => {
       </svg>
       <span>Upload new dataset</span>
     </button>
-    <h1 class="text-4xl text-center text-stone-600 font-bold">
+    <h1
+      class="order-first sm:order-none text-start text-3xl sm:text-4xl sm:text-center text-stone-600 font-bold">
       Geometry Classifier
     </h1>
   </div>
 
   <form
     @submit.prevent="classifyHandle"
-    class="bg-stone-400/30 backdrop-blur-md border border-stone-400 shadow text-stone-800 flex flex-col p-4 px-5 mx-auto w-[500px] m-4 rounded-lg"
+    class="bg-stone-400/30 backdrop-blur-md border border-stone-400 shadow text-stone-800 flex flex-col py-4 px-3 ms:px-5 w-[95%] mx-auto max-w-md rounded-lg"
   >
     <div
       class="w-full border border-gray-400/50 rounded-lg py-2 px-4"
     >
-      <div class="flex justify-between items-center">
-        <label for="point" class="font-bold text-zinc-700 mr-2">Classify point:</label>
+      <div class="flex flex-col sm:flex-row justify-between sm:items-center">
+        <label for="point" class="font-bold text-zinc-700 mr-2">Classify an object:</label>
         <input
           id="point"
-          class="bg-gray-100 flex-1 px-2 py-1 rounded-lg font-bold placeholder:text-zinc-500 placeholder:font-medium outline-none ring-0 border border-gray-300  focus:border-black/60 focus:ring-black/40"
+          class="bg-gray-100 flex-1 text-sm sm:text-base px-2 py-1 mt-2 sm:mt-0 rounded-lg font-bold placeholder:text-zinc-500 placeholder:font-medium outline-none ring-0 border border-gray-300 focus:border-black/60 focus:ring-black/40"
           type="text"
           placeholder="e.g. 2.6, 3.0, 2.5"
           @input="coordsInputHandle"
           autofocus
         />
       </div>
-      <i class="text-sm text-zinc-600">point dimension: {{ classifyForm.dimension }}</i>
+      <i class="text-xs sm:text-sm text-zinc-600">object dimension: {{ classifyForm.dimension }}</i>
     </div>
     <DisplayAnimation>
       <p v-show="classifyForm?.coords?.length>0"
-         class="text-center text-zinc-600 font-semibold">input point: {{ classifyForm.coords }}</p>
+         class="text-center text-zinc-600 font-semibold text-sm sm:text-base">
+        input object: {{ classifyForm.coords }}
+      </p>
     </DisplayAnimation>
 
     <button
-      class="bg-black/75 uppercase tracking-wider flex space-x-2 justify-center rounded-full shadow-md cursor-pointer border-b-3 border-gray-700 px-4 mx-10 py-2 text-zinc-200 font-semibold mt-4 hover:bg-black/85 transition-all"
-      :class="{'cursor-progress bg-green-500/60'  : classifyForm.loading}"
+      class="bg-black/75 uppercase tracking-wider flex space-x-2 items-center justify-center rounded-full shadow-md cursor-pointer border-b-3 border-gray-700 px-4 mx-10 py-2 text-zinc-200 font-semibold text-sm sm:text-base mt-4 hover:bg-black/85 transition-all"
+      :class="{'cursor-progress'  : classifyForm.loading}"
       :disabled="!isActiveBtnClassify"
     >
       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-           stroke="currentColor" class="size-6">
+           stroke="currentColor" class="size-4 sm:size-6">
         <path stroke-linecap="round" stroke-linejoin="round"
               d="m21 7.5-2.25-1.313M21 7.5v2.25m0-2.25-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3 2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75 2.25-1.313M12 21.75V19.5m0 2.25-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25" />
       </svg>
@@ -158,7 +169,7 @@ onMounted(() => {
 
     <DisplayAnimation>
       <p v-if="classifyForm.result"
-         class="text-center font-semibold py-1 mt-4 bg-gradient-to-r from-transparent via-amber-200/60 to-transparent text-amber-600 text-lg">
+         class="text-center font-semibold py-1 mt-4 bg-gradient-to-r from-transparent via-amber-200/60 to-transparent text-amber-600 text-md sm:text-lg">
         Class:
         <span class="font-semibold">"{{ classifyForm.result }}"</span>
       </p>
@@ -196,7 +207,7 @@ onMounted(() => {
         </ul>
       </div>
       <hr class="text-zinc-400/70 my-2">
-      <pre class="mt-4 text-sm"><code>{{ tree }}</code></pre>
+      <pre class="mt-4 text-xs sm:text-sm"><code>{{ tree }}</code></pre>
     </AccordionItem>
   </div>
 </template>
